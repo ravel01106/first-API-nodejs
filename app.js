@@ -6,26 +6,30 @@ app.get('/', (req, res) =>{
     // req es la request, la peticion
     // res es la response, la respuesta
     console.log(req);
-    res.status(200).send('Hello Word!');
+    res.status(200).send('Hello World!');
 });
 
 app.post('/team/pokemons', () => {
-    res.status(200).send('Hello Word!');
+    res.status(200).send('Hello World!');
 });
 
 app.get('/team', () => {
-    res.status(200).send('Hello Word!');
+    res.status(200).send('Hello World!');
 });
 
 app.delete('/team/pokemons/:pokeid', () =>{
-    res.status(200).send('Hello Word!');
+    res.status(200).send('Hello World!');
 });
 
 app.put('/team', () =>{
-    res.status(200).send('Hello Word!');
+    res.status(200).send('Hello World!');
 })
 
 
 app.listen(port, () => {
     console.log('Server started at port 3000');
 });
+
+exports.app = app;
+// TESTING
+// Mocha y chai
