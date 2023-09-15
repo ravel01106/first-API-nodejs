@@ -6,7 +6,7 @@ chai.use(chaiHttp); // Usar el plugin chaiHttp
 const app = require('../app').app;
 
 describe('Suite de prueba e2e', () => {
-    it('Should return Hello World', (done) => {
+    it('Should return Hello World', (done) => { // test de integracion (end point)
         chai.request(app)
             .get('/')
             .end((err, res) => {
