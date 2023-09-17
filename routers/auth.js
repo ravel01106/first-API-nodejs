@@ -32,7 +32,8 @@ router.route('/login')
             }
     
             // Si son validas, generamos un JWT y lo devolvemos
-            const token = jwt.sign({userId: result}, 'secretPassword');
+            let user = usersController.getUserIdFromUserName(req.body.user);
+            const token = jwt.sign({userId: user.userId}, 'secretPassword');
             res.status(200).json(
                 {token: token}
             );

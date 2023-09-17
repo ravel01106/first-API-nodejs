@@ -1,5 +1,7 @@
 const uuid = require('uuid');
 const crypto = require('../crypto');
+const teams = require('./teams');
+
 
 const userDatabase = {};
 // userID -> password(cifrada)
@@ -7,10 +9,12 @@ const userDatabase = {};
 const registerUser = (userName, password) => {
     // Guardar en la base de datos nuestro usuario
     let hashedPwd = crypto.hashPasswordSync(password);
-    userDatabase[uuid.v4()] = {
+    let userId = uuid.v4();
+    userDatabase[userId] = {
         userName: userName,
         password: hashedPwd
     }
+    teams.bootstrapTeam(userId);
     /* crypto.hashPassword(password, (err, result) => {
         userDatabase[uuid.v4()] = {
             userName: userName,
@@ -23,9 +27,15 @@ const registerUser = (userName, password) => {
 const getUserIdFromUserName = (userName) => {
     for (let user in userDatabase){
         if(userDatabase[user].userName == userName){
-            return userDatabase[user];
+            let userData = userDatabase[user];
+            userData.userId = user;
+            return userData;
         }
     }
+}
+
+const getUser = (userId) => {
+    return userDatabase[userId];
 }
 
 const checkUserCredentials = (userName, password, done) => {
@@ -44,7 +54,8 @@ const checkUserCredentials = (userName, password, done) => {
 
 exports.registerUser = registerUser;
 exports.checkUserCredentials = checkUserCredentials;
-
+exports.getUser = getUser;
+exports.getUserIdFromUserName = getUserIdFromUserName;
 
 // Libreria uuid -> npm install -s uuid
 // Libreria bcrypt -> npm install -s bcrypt
