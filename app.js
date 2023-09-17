@@ -1,8 +1,13 @@
 const express = require('express');
-const passport = require('passport');
-require('./auth')(passport);
+const bodyParser = require('body-parser'); // Plugin de express para poder leer los datos que te llegan en las peticiones de forma correcta
+
+// Routes
+const authRoutes = require('./routers/auth').router;
+const teamsRoutes = require('./routers/teams').router;
 
 const app = express();
+app.use(bodyParser.json());
+
 const port = 3000;
 
 app.get('/', (req, res) =>{
@@ -12,35 +17,9 @@ app.get('/', (req, res) =>{
     res.status(200).send('Hello World!');
 });
 
-app.post('/login', (req,res) => {
-    // Comprobamos credenciales
-    // Si no son validas, error
-    // Si son validas, generamos un JWT y lo devolvemos
-    res.status(200).json(
-        {token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.zX5MPQtbjoNAS7rpsx_hI7gqGIlXOQq758dIqyBVxxY'}
-    );
-})
+app.use('/auth', authRoutes);
 /* USER -> MIDDEL 1 -> MIDDEL 2 -> ... -> N -> HANDLER*/
-
-app.post('/team/pokemons', () => {
-    res.status(200).send('Hello World!');
-});
-
-app.get('/team', 
-    passport.authenticate('jwt',{session: false}), // MIDDEL 1
-    (req, res) => { // HANDLER
-        res.status(200).send('Hello World!');
-    }
-);
-
-app.delete('/team/pokemons/:pokeid', () =>{
-    res.status(200).send('Hello World!');
-});
-
-app.put('/team', () =>{
-    res.status(200).send('Hello World!');
-})
-
+app.use('/teams', teamsRoutes);
 
 app.listen(port, () => {
     console.log('Server started at port 3000');
