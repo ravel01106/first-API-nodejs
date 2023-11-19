@@ -1,10 +1,16 @@
-const teamsDatabase = {};
+let teamsDatabase = {};
+
+const cleanUpTeam = () => {
+    for (let user in teamsDatabase) {
+        teamsDatabase[user] = []
+    }
+}
 
 const bootstrapTeam = (userId) =>{
     teamsDatabase[userId] = [{name: 'Charizard'}, {name: 'Blastoise'}]
 }
-const addPokemon = (userId, pokemonName) => {
-    teamsDatabase[userId].push({name: pokemonName});
+const addPokemon = (userId, pokemon) => {
+    teamsDatabase[userId].push(pokemon);
 }
 
 const getTeamOfUser = (userId) => {
@@ -19,3 +25,4 @@ exports.bootstrapTeam = bootstrapTeam;
 exports.addPokemon = addPokemon;
 exports.setTeam = setTeam;
 exports.getTeamOfUser = getTeamOfUser;
+exports.cleanUpTeam = cleanUpTeam;

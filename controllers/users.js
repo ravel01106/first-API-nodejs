@@ -3,8 +3,12 @@ const crypto = require('../crypto');
 const teams = require('./teams');
 
 
-const userDatabase = {};
+let userDatabase = {};
 // userID -> password(cifrada)
+
+const cleanUpUser = () => {
+    userDatabase = {}
+}
 
 const registerUser = (userName, password) => {
     // Guardar en la base de datos nuestro usuario
@@ -56,6 +60,7 @@ exports.registerUser = registerUser;
 exports.checkUserCredentials = checkUserCredentials;
 exports.getUser = getUser;
 exports.getUserIdFromUserName = getUserIdFromUserName;
+exports.cleanUpUser = cleanUpUser;
 
 // Libreria uuid -> npm install -s uuid
 // Libreria bcrypt -> npm install -s bcrypt
