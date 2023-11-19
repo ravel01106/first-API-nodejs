@@ -49,8 +49,9 @@ router.route('/pokemons')
 
 
 router.route('/pokemons/:pokeid')
-    .delete(() =>{
-        res.status(200).send('Hello World!');
+    .delete(passport.authenticate('jwt',{session: false}), (req, res) =>{
+        teamsController.deletePokemonAt(req.user.userId, req.params.pokeid);
+        res.status(200).send();
     }
 );
 

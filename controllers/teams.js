@@ -7,7 +7,7 @@ const cleanUpTeam = () => {
 }
 
 const bootstrapTeam = (userId) =>{
-    teamsDatabase[userId] = [{name: 'Charizard'}, {name: 'Blastoise'}]
+    teamsDatabase[userId] = []
 }
 const addPokemon = (userId, pokemon) => {
     teamsDatabase[userId].push(pokemon);
@@ -21,8 +21,16 @@ const setTeam = (userId, team) => {
     teamsDatabase[userId] = team;
 }
 
+const deletePokemonAt = (userId, pokeId) => {
+    console.log('DELETE ', userId, pokeId);
+    if (teamsDatabase[userId][pokeId]){
+        teamsDatabase[userId].splice(pokeId, 1);
+    }
+}
+
 exports.bootstrapTeam = bootstrapTeam;
 exports.addPokemon = addPokemon;
 exports.setTeam = setTeam;
 exports.getTeamOfUser = getTeamOfUser;
 exports.cleanUpTeam = cleanUpTeam;
+exports.deletePokemonAt = deletePokemonAt;

@@ -54,7 +54,7 @@ describe('Suite de pruebas teams', () => {
 
     it('should return the pokedex number', (done) => {
         let pokemonName = 'bulbasaur';
-        let pokedexNumber = "1";
+        let pokedexNumber = '1';
         chai.request(app)
         .post('/auth/login')
         .set('content-type', 'application/json')
@@ -80,7 +80,39 @@ describe('Suite de pruebas teams', () => {
                 });
             });
         });
+    });
+    it('should delete one pokemon by id', (done) => {
+        let team = [{name: 'charizard'}, {name: 'bulbasaur'}, {name: 'Pikachu'}]
+        chai.request(app)
+        .post('/auth/login')
+        .set('content-type', 'application/json')
+        .send({user: 'admin', password: '4321'})
+        .end((err, res) => {
+            let token = res.body.token;
+            chai.assert.equal(res.statusCode, 200);
+            chai.request(app)
+            .put('/teams')
+            .send({team: team})
+            .set('Authorization', `JWT ${token}`)
+            .end((err, res) => {
+                chai.request(app)
+                .delete('/teams/pokemons/1')
+                .set('Authorization', `JWT ${token}`)
+                .end((err, res) => {
+                    chai.request(app)
+                    .get('/teams')
+                    .set('Authorization', `JWT ${token}`)
+                    .end((err, res) => {
+                        chai.assert.equal(res.statusCode, 200);
+                        chai.assert.equal(res.body.trainer, 'admin');
+                        chai.assert(res.body.team.length, team.length - 1);
+                        done();
+                });
+                })
+            });
+        });
     }); 
+
 });
 
 after((done) => {
