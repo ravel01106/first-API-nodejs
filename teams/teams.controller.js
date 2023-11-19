@@ -22,7 +22,7 @@ const setTeam = (userId, team) => {
 }
 
 const deletePokemonAt = (userId, pokeId) => {
-    console.log('DELETE ', userId, pokeId);
+    //console.log('DELETE ', userId, pokeId);
     if (teamsDatabase[userId][pokeId]){
         teamsDatabase[userId].splice(pokeId, 1);
     }

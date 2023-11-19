@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-require('../auth')(passport);
+require('../tools/auth')(passport);
 const axios = require('axios').default;
 
-const teamsController = require('../controllers/teams');
-const { getUser } = require('../controllers/users');
+const teamsController = require('./teams.controller');
+const { getUser } = require('../auth/users.controller');
 
 router.route('/')
     .get(passport.authenticate('jwt',{session: false}), // MIDDEL 1
@@ -30,7 +30,7 @@ router.route('/pokemons')
     (req, res) => {
         let pokemonName = req.body.name;
         // axios = sirve para hacer llamadas HTTP a servidores -> npm install -S axios
-        console.log("calling pokeapi...")
+        //console.log("calling pokeapi...")
         axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
             .then( (response) => {
                 let pokemon = {

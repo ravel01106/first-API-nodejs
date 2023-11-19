@@ -1,10 +1,10 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const usersController = require("../controllers/users");
+const usersController = require("../users.controller");
 
 chai.use(chaiHttp); 
 
-const app = require('../app').app;
+const app = require('../../app').app;
 
 before((done) => {
     usersController.registerUser('bettatech', '1234');

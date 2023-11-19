@@ -7,7 +7,7 @@ module.exports = passport => {
         secretOrKey: 'secretPassword' // TODO deberia estar en una variable de entorno
     }
     passport.use(new JwtStrategy(opts, (decoded, done) => {
-        console.log('decoded jwt', decoded);
+        //console.log('decoded jwt', decoded);
         return done( null, decoded);
     }));
 }

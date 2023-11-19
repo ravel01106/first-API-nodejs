@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": ".\\node_modules\\.bin\\mocha"
+    "test-linux": ".\\node_modules\\.bin\\mocha **/**/*.test.js",
+    "test-windows": "node node_modules/mocha/bin/mocha teams/**/*.test.js auth/**/*.test.js tools/test/**/*.test.js"
   },
   "author": "",
   "license": "ISC",

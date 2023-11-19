@@ -1,6 +1,6 @@
 const uuid = require('uuid');
-const crypto = require('../crypto');
-const teams = require('./teams');
+const crypto = require('../tools/crypto');
+const teams = require('../teams/teams.controller');
 
 
 let userDatabase = {};
@@ -44,10 +44,10 @@ const getUser = (userId) => {
 
 const checkUserCredentials = (userName, password, done) => {
     // Comprobar que las credenciales son correctas
-    console.log('Checking user credentials');
+    //console.log('Checking user credentials');
     let user = getUserIdFromUserName(userName);
     if(user){
-        console.log(user);
+        //console.log(user);
         crypto.comparePassword(password, user.password, done);
     }else{
         done('Missing user');
