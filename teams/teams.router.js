@@ -1,15 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
-require('../tools/auth')(passport);
 const axios = require('axios').default;
 
 const teamsController = require('./teams.controller');
 const { getUser } = require('../auth/users.controller');
 
 router.route('/')
-    .get(passport.authenticate('jwt',{session: false}), // MIDDEL 1
-            (req, res, next) => { // HANDLER
+    .get((req, res) => {
                 let user = getUser(req.user.userId);
                 res.status(200).json({
                     trainer: user.userName,
@@ -18,7 +15,7 @@ router.route('/')
             
         }
     )
-    .put(passport.authenticate('jwt',{session: false}), (req, res) =>{
+    .put((req, res) =>{
         teamsController.setTeam(req.user.userId, req.body.team);
         res.status(200).send();
         
@@ -26,8 +23,7 @@ router.route('/')
 );
 
 router.route('/pokemons')
-    .post(passport.authenticate('jwt',{session: false}),
-    (req, res) => {
+    .post((req, res) => {
         let pokemonName = req.body.name;
         // axios = sirve para hacer llamadas HTTP a servidores -> npm install -S axios
         //console.log("calling pokeapi...")
@@ -49,7 +45,7 @@ router.route('/pokemons')
 
 
 router.route('/pokemons/:pokeid')
-    .delete(passport.authenticate('jwt',{session: false}), (req, res) =>{
+    .delete((req, res) =>{
         teamsController.deletePokemonAt(req.user.userId, req.params.pokeid);
         res.status(200).send();
     }

@@ -1,15 +1,16 @@
 const express = require('express');
-const bodyParser = require('body-parser'); // Plugin de express para poder leer los datos que te llegan en las peticiones de forma correcta
+const middlewares = require('./middlewares')
+
 
 // Routes
 const authRoutes = require('./auth/auth.router').router;
 const teamsRoutes = require('./teams/teams.router').router;
 
 const app = express();
-app.use(bodyParser.json());
 
 const port = 3000;
 
+middlewares.setupMiddlewares(app);
 app.get('/', (req, res) =>{
     res.status(200).send('Hello World!');
 });
