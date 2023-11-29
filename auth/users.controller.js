@@ -4,56 +4,63 @@ const teams = require('../teams/teams.controller');
 
 
 let userDatabase = {};
-// userID -> password(cifrada)
 
 const cleanUpUser = () => {
-    userDatabase = {}
+    return new Promise((resolve, reject) => {
+        userDatabase = {}
+        resolve()
+    })
 }
 
 const registerUser = (userName, password) => {
-    // Guardar en la base de datos nuestro usuario
-    let hashedPwd = crypto.hashPasswordSync(password);
-    let userId = uuid.v4();
-    userDatabase[userId] = {
-        userName: userName,
-        password: hashedPwd
-    }
-    teams.bootstrapTeam(userId);
-    /* crypto.hashPassword(password, (err, result) => {
-        userDatabase[uuid.v4()] = {
+    return new Promise(async (resolve, reject) => {
+        let hashedPwd = crypto.hashPasswordSync(password);
+        // Guardar en la base de datos nuestro usuario
+        let userId = uuid.v4();
+        userDatabase[userId] = {
             userName: userName,
-            password: result
+            password: hashedPwd
         }
-    }) */
-    
+        await teams.bootstrapTeam(userId);
+        resolve();
+    });
 }
 
 const getUserIdFromUserName = (userName) => {
-    for (let user in userDatabase){
-        if(userDatabase[user].userName == userName){
-            let userData = userDatabase[user];
-            userData.userId = user;
-            return userData;
+    return new Promise((resolve, reject) => {
+        for (let user in userDatabase) {
+            if (userDatabase[user].userName == userName) {
+                let userData = userDatabase[user];
+                userData.userId = user;
+                return resolve(userData);
+            }
         }
-    }
+        reject('No user found')
+
+    })
 }
 
 const getUser = (userId) => {
-    return userDatabase[userId];
+    return new Promise((resolve, reject) => {
+        resolve(userDatabase[userId]);
+    });
 }
 
-const checkUserCredentials = (userName, password, done) => {
-    // Comprobar que las credenciales son correctas
-    //console.log('Checking user credentials');
-    let user = getUserIdFromUserName(userName);
-    if(user){
-        //console.log(user);
-        crypto.comparePassword(password, user.password, done);
-    }else{
-        done('Missing user');
-    }
-    /*  let user = userDatabase[userId];
-    crypto.comparePassword(password, user.password, done); */
+const checkUserCredentials = (userName, password) => {
+    return new Promise(async (resolve, reject) => {
+        let user = await getUserIdFromUserName(userName);
+        if (user) {
+            crypto.comparePassword(password, user.password, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        } else {
+            reject('Missing user');
+        }
+    });
 }
 
 exports.registerUser = registerUser;

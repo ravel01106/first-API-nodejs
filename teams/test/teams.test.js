@@ -12,9 +12,8 @@ before((done) => {
     done();
 })
 
-afterEach((done) => {
-    teamsController.cleanUpTeam();
-    done();
+afterEach(async () => {
+    await teamsController.cleanUpTeam();
 })
 
 describe('Suite de pruebas teams', () => {
@@ -81,6 +80,7 @@ describe('Suite de pruebas teams', () => {
             });
         });
     });
+    
     it('should delete one pokemon by id', (done) => {
         let team = [{name: 'charizard'}, {name: 'bulbasaur'}, {name: 'Pikachu'}]
         chai.request(app)
@@ -112,6 +112,39 @@ describe('Suite de pruebas teams', () => {
             });
         });
     }); 
+
+    it('should not be able to add pokemon if you already have 6', (done) => {
+        let team = [
+            {name: "Charizard"}, 
+            {name: "Blastoise"},
+            {name: "Pikachu"}, 
+            {name: "Charizard"}, 
+            {name: "Blastoise"},
+            {name: "Pikachu"}
+        ]
+        chai.request(app)
+        .post('/auth/login')
+        .set('content-type', 'application/json')
+        .send({user: 'admin', password: '4321'})
+        .end((err, res) => {
+            let token = res.body.token;
+            chai.assert.equal(res.statusCode, 200);
+            chai.request(app)
+            .put('/teams')
+            .send({team: team})
+            .set('Authorization', `JWT ${token}`)
+            .end((err, res) => {
+                chai.request(app)
+                .post('/teams/pokemons')
+                .send({name: 'Vibrava'})
+                .set('Authorization', `JWT ${token}`)
+                .end((err, res) => {
+                    chai.assert.equal(res.statusCode, 400);
+                    done();
+                });
+            });
+        });
+    });
 
 });
 
