@@ -1,18 +1,21 @@
+const mongoose = require('mongoose');
+const teamModel = mongoose.model('TeamModel', {userId: String, team:[]})
+
 let teamsDatabase = {};
 
 // TODO Cambiar todo a promesas
 
 const cleanUpTeam = () => {
-    return new Promise((resolve, reject) => {
-        for (let user in teamsDatabase) {
-            teamsDatabase[user] = [];
-        }
+    return new Promise(async (resolve, reject) => {
+        await teamModel.deleteMany({}).exec();
         resolve();
     })
 }
 
 const bootstrapTeam = (userId) =>{
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+        let newTeam = new teamModel({userId: userId, team:[]})
+        await newTeam.save()
         teamsDatabase[userId] = [];
         resolve();
     })
