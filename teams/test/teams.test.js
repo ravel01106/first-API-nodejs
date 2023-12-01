@@ -6,16 +6,15 @@ const teamsController = require('../teams.controller')
 chai.use(chaiHttp);
 const app = require('../../app').app;
 
-before((done) => {
-    usersController.registerUser('bettatech', '1234');
-    usersController.registerUser('admin', '4321');
-    done();
+beforeEach(async () => {
+    await usersController.registerUser('bettatech', '1234');
+    await usersController.registerUser('admin', '4321');
 })
 
 afterEach(async () => {
     await teamsController.cleanUpTeam();
+    await usersController.cleanUpUser();
 })
-
 describe('Suite de pruebas teams', () => {
     it('should return the team of the given user', (done) => {
         let team = [{name: "Charizard"}, {name: "Blastoise"}]
@@ -147,8 +146,3 @@ describe('Suite de pruebas teams', () => {
     });
 
 });
-
-after((done) => {
-    usersController.cleanUpUser();
-    done();
-})

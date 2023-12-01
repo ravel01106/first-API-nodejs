@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
+const { to } = require('../tools/to');
 const teamModel = mongoose.model('TeamModel', {userId: String, team:[]})
-
-let teamsDatabase = {};
-
-// TODO Cambiar todo a promesas
 
 const cleanUpTeam = () => {
     return new Promise(async (resolve, reject) => {
@@ -16,41 +13,62 @@ const bootstrapTeam = (userId) =>{
     return new Promise(async (resolve, reject) => {
         let newTeam = new teamModel({userId: userId, team:[]})
         await newTeam.save()
-        teamsDatabase[userId] = [];
         resolve();
     })
 }
 
 const addPokemon = (userId, pokemon) => {
-    return new Promise((resolve, reject) => {
-        if (teamsDatabase[userId].length == 6) {
+    return new Promise(async (resolve, reject) => {
+        let [err, dbTeam] = await to(teamModel.findOne({userId:userId}).exec());
+        if (err){
+            return reject(err)
+        }
+        if (dbTeam.team.length == 6) {
             reject('Already have 6 pokemon');
         } else {
-            teamsDatabase[userId].push(pokemon);
+           dbTeam.team.push(pokemon);
+           await dbTeam.save();
             resolve();
         }
     });
 }
 
 const getTeamOfUser = (userId) => {
-    return new Promise((resolve, reject) => {
-        resolve(teamsDatabase[userId]);
+    return new Promise(async (resolve, reject) => {
+        let teams = await to(teamModel.find({}).exec());
+        let [err, dbTeam] = await to(teamModel.findOne({userId:userId}).exec());
+        if (err){
+            return reject(err)
+        }
+        resolve(dbTeam.team);
     });
 }
 
 const setTeam = (userId, team) => {
-    return new Promise((resolve, reject) => {
-        teamsDatabase[userId] = team;
+    return new Promise(async (resolve, reject) => {
+        let [err, dbTeam] = await to(teamModel.updateOne(
+            {userId: userId}, 
+            {$set: {team: team}},
+            {upsert: true}).exec());
+
+        if (err || !dbTeam){
+            return reject(err)
+        }
         resolve();
     })
 
 }
 
-const deletePokemonAt = (userId, pokeId) => {
-    return new Promise((resolve, reject) => {
-        if (teamsDatabase[userId][index]) {
-            teamsDatabase[userId].splice(index, 1);
+const deletePokemonAt = (userId, index) => {
+    return new Promise(async (resolve, reject) => {
+        let [err, dbTeam] = await to(teamModel.findOne({userId:userId}).exec());
+        if (err || !dbTeam){
+            return reject(err)
         }
+        if (dbTeam.team[index]) {
+            dbTeam.team.splice(index, 1);
+        }
+        await dbTeam.save();
         resolve();
     })
 
